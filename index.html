@@ -75,10 +75,7 @@
           
 
         <!-- BODY --> 
-        <div class="modal-body">
-
-          <!-- Ligne 1 -->
-  <div class="row g-1 mb-2 align-items-center">
+  <div class="row g-1 mb-2">
 
     <div class="col">
         <input type="text"
@@ -87,51 +84,57 @@
                placeholder="Hotel">
     </div>
 
-    <div style="width:50px;">
+    <div class="col-auto">
         <input type="text"
                class="form-control form-control-sm"
                id="hotel-cat"
-               placeholder="cat*">
+               placeholder="cat*"
+               style="width:70px;">
     </div>
 
-    <div style="width:110px;">
+    <div class="col-auto">
         <input type="text"
                class="form-control form-control-sm"
                id="hotel-chbcat"
-               placeholder="chb cat">
+               placeholder="chb cat"
+               style="width:100px;">
     </div>
 
-    <div style="width:90px;">
+    <div class="col-auto">
         <input type="text"
                class="form-control form-control-sm"
                id="hotel-prix"
-               placeholder="prix€">
+               placeholder="prix€"
+               style="width:90px;">
     </div>
 
 </div>
 
-          <!-- Adresse -->
-          <div class="mb-3">
-            <input type="text" class="form-control" id="hotel-address" placeholder="Adresse">
-          </div>
+<div class="mb-2">
+    <input type="text"
+           class="form-control form-control-sm"
+           id="hotel-address"
+           placeholder="Adresse">
+</div>
 
-          <!-- Téléphone + Email -->
-          <div class="row g-2 mb-3">
-            <div class="col-6">
-              <input type="tel" class="form-control" id="hotel-phone" placeholder="Téléphone">
-            </div>
-            <div class="col-6">
-              <input type="email" class="form-control" id="hotel-email" placeholder="Email">
-            </div>
-          </div>
+<div class="row g-2 mb-3">
 
-          <!-- URL de réservation --> 
-           <!--
-          <div class="mb-3">
-            <input type="text" class="form-control" id="hotel-url" placeholder="URL de réservation (Booking, site hôtel...)">
-          </div>
-        -->
-        </div>
+    <div class="col-4">
+        <input type="text"
+               class="form-control form-control-sm"
+               id="hotel-phone"
+               placeholder="Téléphone">
+    </div>
+
+    <div class="col-8">
+        <input type="email"
+               class="form-control form-control-sm"
+               id="hotel-email"
+               placeholder="Email">
+    </div>
+
+</div>
+
 
         <!-- FOOTER -->
         <div class="modal-footer d-flex justify-content-between">
@@ -321,8 +324,36 @@ Réserver : ${hotel.url}
         }
       });
     }
+function setTodayDate() {
 
-  </script>
+    const now = new Date();
+
+    const options = {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long'
+    };
+
+    let formatted = now.toLocaleDateString('fr-FR', options);
+
+    // Première lettre du jour en majuscule
+    formatted =
+        formatted.charAt(0).toUpperCase() +
+        formatted.slice(1);
+
+    // Première lettre du mois en majuscule
+    formatted = formatted.replace(
+        /(\d{2})\s([a-zàâçéèêëîïôûùüÿñæœ]+)/i,
+        (match, day, month) => {
+            return day + ' ' +
+                month.charAt(0).toUpperCase() +
+                month.slice(1);
+        }
+    );
+
+    document.getElementById('popup-date').textContent = formatted;
+}
+  </script> 
 <script>
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/service-worker.js");
