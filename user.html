@@ -21,6 +21,54 @@ body{
     margin:auto;
 }
 
+#popup-date{
+    font-size:20px;
+    white-space:nowrap;
+}
+
+#tm-clock-box{
+    background:rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    padding:4px 10px;
+    border-radius:10px;
+    box-shadow:0 4px 15px rgba(0,0,0,.10);
+    text-align:center;
+    min-width:90px;
+}
+
+#tm-clock{
+    font-family:'Segoe UI Light','Inter','Roboto',sans-serif;
+    font-size:18px;
+    font-weight:300;
+    letter-spacing:.05em;
+    color:#222;
+}
+
+.badge-offer{
+    font-size:.85rem;
+}
+
+@media (max-width:576px){
+
+    .fs-5{
+        font-size:1rem !important;
+    }
+
+    #popup-date{
+        font-size:12px;
+    }
+
+    #tm-clock-box{
+        min-width:75px;
+        padding:3px 6px;
+    }
+
+    #tm-clock{
+        font-size:14px;
+    }
+
+}
+
 </style>
 
 </head>
@@ -35,103 +83,89 @@ body{
 
             <!-- Header -->
 
-            <div class="row align-items-center g-2 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
-                <div class="col-auto">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+
                     <img src="cow.png"
                          alt="La Vache"
                          style="height:32px;">
-                </div>
 
-                <div class="col-auto fw-bold fs-5">
-                    La Vache
-                </div>
+                    <span class="fw-bold fs-5">
+                        La Vache
+                    </span>
 
-                <div class="col-auto">
                     <span id="popup-date"
-                          class="text-muted fw-semibold"
-                          style="font-size:15px; white-space:nowrap;">
+                          class="text-muted fw-semibold">
                     </span>
+
                 </div>
 
-                <div class="col-auto">
-                    <span id="digital-clock"
-                          class="text-muted fw-semibold"
-                          style="font-size:15px; white-space:nowrap;">
-                    </span>
+                <div id="tm-clock-box">
+
+                    <div id="tm-clock">
+                        00:00:00
+                    </div>
+
                 </div>
 
             </div>
 
-            <!-- Ligne 1 -->
+            <!-- Offre -->
 
-            <div class="row g-1 mb-2">
+            <div class="row align-items-center g-2 mb-3">
 
                 <div class="col">
-                    <input type="text"
-                           class="form-control form-control-sm"
-                           value="Hilton"
-                           readonly>
+                    <input
+                        type="text"
+                        id="hotel-name"
+                        class="form-control form-control-sm fw-bold"
+                        value="Hilton"
+                        readonly>
                 </div>
 
                 <div class="col-auto">
-                    <input type="text"
-                           class="form-control form-control-sm"
-                           value="4★"
-                           readonly
-                           style="width:70px;">
+                    <span id="hotel-cat"
+                          class="badge bg-secondary badge-offer">
+                        4★
+                    </span>
                 </div>
 
                 <div class="col-auto">
-                    <input type="text"
-                           class="form-control form-control-sm"
-                           value="Double"
-                           readonly
-                           style="width:110px;">
+                    <span id="hotel-room"
+                          class="badge bg-info text-dark badge-offer">
+                        Double
+                    </span>
                 </div>
 
                 <div class="col-auto">
-                    <input type="text"
-                           class="form-control form-control-sm"
-                           value="89€"
-                           readonly
-                           style="width:80px;">
+                    <span id="hotel-price"
+                          class="badge bg-success badge-offer">
+                        89€
+                    </span>
                 </div>
 
             </div>
 
             <!-- Adresse -->
 
-            <div class="mb-2">
+            <div id="hotel-address"
+                 class="small text-muted mb-3">
 
-                <input type="text"
-                       class="form-control form-control-sm"
-                       value="10 Rue de Paris, 75001 Paris"
-                       readonly>
+                📍 10 Rue de Paris, 75001 Paris
 
             </div>
 
-            <!-- Téléphone / Email -->
+            <!-- Contact -->
 
-            <div class="row g-2 mb-3">
+            <div id="hotel-contact"
+                 class="small mb-3">
 
-                <div class="col-4">
+                📞 +33 1 00 00 00 00
 
-                    <input type="text"
-                           class="form-control form-control-sm"
-                           value="+33 1 00 00 00 00"
-                           readonly>
+                <br>
 
-                </div>
-
-                <div class="col-8">
-
-                    <input type="email"
-                           class="form-control form-control-sm"
-                           value="hotel@email.fr"
-                           readonly>
-
-                </div>
+                ✉ hotel@email.fr
 
             </div>
 
@@ -139,22 +173,34 @@ body{
 
             <div class="row g-2 mb-3">
 
-                <div class="col">
-                    <button class="btn btn-primary btn-sm w-100">
+                <div class="col-4">
+
+                    <button
+                        class="btn btn-primary btn-sm w-100"
+                        onclick="shareOffer()">
                         Share
                     </button>
+
                 </div>
 
-                <div class="col">
-                    <button class="btn btn-secondary btn-sm w-100">
+                <div class="col-4">
+
+                    <button
+                        class="btn btn-secondary btn-sm w-100"
+                        onclick="showQRCode()">
                         QR Code
                     </button>
+
                 </div>
 
-                <div class="col">
-                    <button class="btn btn-success btn-sm w-100">
+                <div class="col-4">
+
+                    <button
+                        class="btn btn-success btn-sm w-100"
+                        onclick="reserveOffer()">
                         Réserver
                     </button>
+
                 </div>
 
             </div>
@@ -164,15 +210,23 @@ body{
             <div class="row g-2">
 
                 <div class="col-6">
-                    <button class="btn btn-warning btn-sm w-100">
-                        Activer la notification
+
+                    <button
+                        class="btn btn-warning btn-sm w-100"
+                        onclick="askNotificationPermission()">
+                        Notification
                     </button>
+
                 </div>
 
                 <div class="col-6">
-                    <button class="btn btn-primary btn-sm w-100">
-                        Installer l'Application
+
+                    <button
+                        class="btn btn-primary btn-sm w-100"
+                        onclick="installApp()">
+                        Installer
                     </button>
+
                 </div>
 
             </div>
@@ -184,6 +238,8 @@ body{
 </div>
 
 <script>
+
+/* Date + Horloge */
 
 function updateHeader() {
 
@@ -203,23 +259,129 @@ function updateHeader() {
 
     date = date.replace(
         /(\d{2})\s([a-zà-ÿ]+)/i,
-        (m, d, month) =>
-            d + ' ' +
+        (match, day, month) =>
+            day + ' ' +
             month.charAt(0).toUpperCase() +
             month.slice(1)
     );
 
     document.getElementById('popup-date').textContent = date;
 
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
 
-    document.getElementById('digital-clock').textContent =
-        h + ':' + m;
+    document.getElementById('tm-clock').textContent =
+        `${h}:${m}:${s}`;
 }
 
 updateHeader();
-setInterval(updateHeader, 1000);
+setInterval(updateHeader,1000);
+
+/* Chargement offre */
+
+async function loadOffer() {
+
+    try {
+
+        const response = await fetch('list.php');
+
+        const data = await response.json();
+
+        document.getElementById('hotel-name').value =
+            data.hotel_nom || '';
+
+        document.getElementById('hotel-cat').textContent =
+            data.hotel_cat || '';
+
+        document.getElementById('hotel-room').textContent =
+            data.hotel_chbcat || '';
+
+        document.getElementById('hotel-price').textContent =
+            data.hotel_prix || '';
+
+        document.getElementById('hotel-address').innerHTML =
+            '📍 ' + (data.adresse || '');
+
+        document.getElementById('hotel-contact').innerHTML =
+            '📞 ' + (data.tel || '') +
+            '<br>✉ ' + (data.email || '');
+
+    }
+    catch(error) {
+
+        console.error(error);
+
+    }
+}
+
+loadOffer();
+
+/* Share */
+
+async function shareOffer() {
+
+    if (navigator.share) {
+
+        await navigator.share({
+            title: 'La Vache',
+            text: 'Découvrez l’offre du jour',
+            url: window.location.href
+        });
+
+    } else {
+
+        navigator.clipboard.writeText(window.location.href);
+
+        alert('Lien copié');
+    }
+}
+
+/* QR Code */
+
+function showQRCode() {
+
+    alert('QR Code à connecter plus tard');
+}
+
+/* Réservation */
+
+function reserveOffer() {
+
+    window.location.href = 'reserve.php';
+}
+
+/* Notifications */
+
+function askNotificationPermission() {
+
+    Notification.requestPermission();
+}
+
+/* Installation PWA */
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+
+    e.preventDefault();
+
+    deferredPrompt = e;
+});
+
+async function installApp() {
+
+    if (!deferredPrompt) {
+
+        alert('Installation non disponible');
+
+        return;
+    }
+
+    deferredPrompt.prompt();
+
+    await deferredPrompt.userChoice;
+}
 
 </script>
 
