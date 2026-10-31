@@ -25,36 +25,35 @@
             white-space: nowrap;
         }
 
-       #tm-clock-box {
-    background: rgba(255, 255, 255, .35);
-    backdrop-filter: blur(6px);
-    padding: 4px 12px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, .10);
-    text-align: center;
-    min-width: 240px;
-}
+        #tm-clock-box {
+            background: rgba(255, 255, 255, .35);
+            backdrop-filter: blur(6px);
+            padding: 4px 12px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .10);
+            text-align: center;
+            min-width: 240px;
+        }
 
-#tm-clock {
-    font-family: 'Segoe UI Light', 'Inter', 'Roboto', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #222;
-    white-space: nowrap;
-}
+        #tm-clock {
+            font-family: 'Segoe UI Light', 'Inter', 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #222;
+            white-space: nowrap;
+        }
 
-@media (max-width:576px) {
+        @media (max-width:576px) {
 
-    #tm-clock-box {
-        min-width: auto;
-        padding: 3px 8px;
-    }
+            #tm-clock-box {
+                min-width: auto;
+                padding: 3px 8px;
+            }
 
-    #tm-clock {
-        font-size: 11px;
-    }
-}
-
+            #tm-clock {
+                font-size: 11px;
+            }
+        }
     </style>
 
 </head>
@@ -77,14 +76,14 @@
 
                         <span class="fw-normal fs-5">
                             -Today's Last Rooms-
-                        </span>                        
+                        </span>
                     </div>
 
                     <div id="tm-clock-box">
-    <div id="tm-clock">
-        Lundi 28 Septembre | 23:42:35
-    </div>
-</div>
+                        <div id="tm-clock">
+                            Lundi 28 Septembre | 23:42:35
+                        </div>
+                    </div>
 
                 </div>
 
@@ -199,39 +198,39 @@
 
         /* Date + Horloge */
 
-function updateHeader() {
+        function updateHeader() {
 
-    const now = new Date();
+            const now = new Date();
 
-    const weekday = now.toLocaleDateString('fr-FR', {
-        weekday: 'long'
-    });
+            const weekday = now.toLocaleDateString('fr-FR', {
+                weekday: 'long'
+            });
 
-    const month = now.toLocaleDateString('fr-FR', {
-        month: 'long'
-    });
+            const month = now.toLocaleDateString('fr-FR', {
+                month: 'long'
+            });
 
-    const day = String(now.getDate()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
 
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
 
-    const dateText =
-        weekday.charAt(0).toUpperCase() +
-        weekday.slice(1) +
-        ' ' +
-        day +
-        ' ' +
-        month.charAt(0).toUpperCase() +
-        month.slice(1);
+            const dateText =
+                weekday.charAt(0).toUpperCase() +
+                weekday.slice(1) +
+                ' ' +
+                day +
+                ' ' +
+                month.charAt(0).toUpperCase() +
+                month.slice(1);
 
-    document.getElementById('tm-clock').textContent =
-        `${dateText} | ${h}:${m}:${s}`;
-}
+            document.getElementById('tm-clock').textContent =
+                `${dateText} | ${h}:${m}:${s}`;
+        }
 
-updateHeader();
-setInterval(updateHeader, 1000);
+        updateHeader();
+        setInterval(updateHeader, 1000);
 
         updateHeader();
         setInterval(updateHeader, 1000);
