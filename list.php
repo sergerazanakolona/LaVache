@@ -1,35 +1,55 @@
 <?php
-// -------------------------------------------------------------
-// LIST.PHP
-// Renvoie toutes les réservations au format JSON
-// -------------------------------------------------------------
 
 header('Content-Type: application/json');
 
-// Connexion MySQL
-require 'config.php';
-
 try {
-    // Requête SQL : récupérer toutes les réservations
+
+    $pdo = new PDO(
+        "mysql:host=localhost;dbname=lavache;charset=utf8",
+        "root",
+        ""
+    );
+
     $stmt = $pdo->query("
-        SELECT id, hotel_nom, hotel_cat, hotel_chb, hotel_prix,
-               adresse, tel, email, nom_complet, created_at
+        SELECT
+            hotel_nom,
+            hotel_cat,
+            hotel_chb,
+            hotel_prix,
+            adresse,
+            tel,
+            email,
+            hotel_url
         FROM reservations
         ORDER BY id DESC
+        LIMIT 1
     ");
 
-    $reservations = $stmt->fetchAll();
+    $offer = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    echo json_encode([
-        'status' => 'ok',
-        'count' => count($reservations),
-        'data' => $reservations
-    ]);
+    if (!$offer) {
 
-} catch (Exception $e) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Erreur SQL : ' . $e->getMessage()
-    ]);
+        echo json_encode([
+            "hotel_nom" => "",
+            "hotel_cat" => "",
+            "hotel_chb" => "",
+            "hotel_prix" => "",
+            "adresse" => "",
+            "tel" => "",
+            "email" => "",
+            "hotel_url" => ""
+        ]);
+
+        exit;
+    }
+
+    echo json_encode($offer);
+
 }
-?>
+catch(Exception $e){
+
+    echo json_encode([
+        "error" => $e->getMessage()
+    ]);
+
+}

@@ -1,366 +1,598 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <title>La Vache hotel slave — Bootstrap 5</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <link rel="manifest" href="/manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<title>La Vache hotel slave — Bootstrap 5</title>
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-    }
-    .qr-modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-  </style>
+<link rel="manifest" href="/manifest.json">
+
+<style>
+
+body{
+    font-family:system-ui,sans-serif;
+}
+
+.qr-modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.8);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+</style>
+
 </head>
 
 <body class="bg-light p-4">
 
-  <!-- Bouton d'ouverture -->
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reservationModal">
-    Ouvrir La Vache 
-  </button>
+<button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#reservationModal">
 
-  <!-- MODALE -->
-  <div class="modal fade" id="reservationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
+    Ouvrir La Vache
 
-        <!-- HEADER --> 
-          <div class="modal-header">
-          <h5 class="modal-title">
-            
-            <div class="row align-items-center mb-2">
+</button>
 
-    <div class="col-auto">
-        <img src="cow.png"
-             alt="La Vache"
-             style="height:32px;">
-    </div>
+<div
+    class="modal fade"
+    id="reservationModal"
+    tabindex="-1">
 
-    <div class="col-auto fw-bold fs-5">
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h5 class="modal-title w-100">
+
+<div class="row align-items-center">
+
+    <div class="d-flex align-items-center gap-3">
+
+    <img
+        src="cow.png"
+        alt="La Vache"
+        style="height:32px;">
+
+    <span class="fw-bold fs-4">
         La Vache
-    </div>
-
-    <div class="col text-muted small">
-        <span id="popup-date"></span>
-    </div>
-
-    <div class="col-auto">
-        <input type="text"
-               class="form-control form-control-sm"
-               placeholder="Code"
-               style="width:80px;">
-    </div>
+    </span>
+ <div
+        class="border rounded shadow-sm bg-white p-2">
+    <span
+        id="header-datetime"
+        class="text-muted fw-normal"
+        style="font-size: 15px; white-space:nowrap;">
+    </span>
 
 </div>
-             <span id="popup-date" class="text-muted"></span>
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          
 
-        <!-- BODY --> 
-  <div class="row g-1 mb-2">
+</div>
 
-    <div class="col">
-        <input type="text"
-               class="form-control form-control-sm"
-               id="hotel-hotel"
-               placeholder="Hotel">
-    </div>
+</h5>
 
-    <div class="col-auto">
-        <input type="text"
-               class="form-control form-control-sm"
-               id="hotel-cat"
-               placeholder="cat*"
-               style="width:70px;">
-    </div>
+<button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal">
+</button>
 
-    <div class="col-auto">
-        <input type="text"
-               class="form-control form-control-sm"
-               id="hotel-chbcat"
-               placeholder="chb cat"
-               style="width:100px;">
-    </div>
+</div>
 
-    <div class="col-auto">
-        <input type="text"
-               class="form-control form-control-sm"
-               id="hotel-prix"
-               placeholder="prix€"
-               style="width:90px;">
-    </div>
+<div class="modal-body">
+
+<div class="row g-1 mb-2">
+
+<div class="col">
+<input
+    type="text"
+    class="form-control form-control-sm"
+    id="hotel-hotel"
+    placeholder="Hotel">
+</div>
+
+<div class="col-auto">
+<input
+    type="text"
+    class="form-control form-control-sm"
+    id="hotel-cat"
+    placeholder="cat*"
+    style="width:70px;">
+</div>
+
+<div class="col-auto">
+<input
+    type="text"
+    class="form-control form-control-sm"
+    id="hotel-chbcat"
+    placeholder="chb cat"
+    style="width:100px;">
+</div>
+
+<div class="col-auto">
+<input
+    type="text"
+    class="form-control form-control-sm"
+    id="hotel-prix"
+    placeholder="prix €"
+    style="width:90px;">
+</div>
 
 </div>
 
 <div class="mb-2">
-    <input type="text"
-           class="form-control form-control-sm"
-           id="hotel-address"
-           placeholder="Adresse">
-</div>
 
-<div class="row g-2 mb-3">
-
-    <div class="col-4">
-        <input type="text"
-               class="form-control form-control-sm"
-               id="hotel-phone"
-               placeholder="Téléphone">
-    </div>
-
-    <div class="col-8">
-        <input type="email"
-               class="form-control form-control-sm"
-               id="hotel-email"
-               placeholder="Email">
-    </div>
+<input
+    type="text"
+    class="form-control form-control-sm"
+    id="hotel-address"
+    placeholder="Adresse">
 
 </div>
 
+<div class="row g-2 mb-2">
 
-        <!-- FOOTER -->
-        <div class="modal-footer d-flex justify-content-between">
+<div class="col-4">
+<input
+    type="text"
+    class="form-control form-control-sm"
+    id="hotel-phone"
+    placeholder="Téléphone">
+</div>
 
-          <button id="btn-close" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-
-          <button class="btn btn-primary" onclick="shareOffer()">Share</button>
-
-          <button class="btn btn-secondary" onclick="showQR()">QR Code</button>
-
-          <button id="btn-reserve" class="btn btn-primary">Réserver</button>
-
-          <button id="btn-sendhash" class="btn btn-success">Publier</button> 
-
- <div class="row mb-3">
-    <div class="col-6">
-        <button class="btn btn-warning btn-sm w-100" onclick="askNotificationPermission()">
-            Activer.la.Notification
-        </button>
-    </div>
-
-    <div class="col-6">
-        <a href="install.html" class="btn btn-primary btn-sm w-100">
-            Installer.l'Application
-        </a>
- 
-    </div>
+<div class="col-8">
+<input
+    type="email"
+    class="form-control form-control-sm"
+    id="hotel-email"
+    placeholder="Email">
 </div>
 
 </div>
 
-        </div>
+<div class="mb-2">
 
-      </div>
-    </div>
-  </div>
+<input
+    type="url"
+    class="form-control form-control-sm"
+    id="hotel-url"
+    placeholder="URL réservation">
 
-  <script>
+</div>
 
-    /* ------------------------------
-       1. Mettre la date du jour
-    ------------------------------ */
-    function setTodayDate() {
-      const now = new Date();
-      const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
-      const formatted = now.toLocaleDateString('fr-FR', options);
-      const finalDate = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-      document.getElementById('popup-date').textContent = finalDate;
-    }
+</div>
 
-    document.getElementById('reservationModal')
-      .addEventListener('shown.bs.modal', setTodayDate);
+<div class="modal-footer">
+
+<div class="w-100 d-flex flex-wrap gap-2 mb-2">
+
+<button
+    id="btn-close"
+    class="btn btn-secondary"
+    data-bs-dismiss="modal">
+
+    Annuler
+
+</button>
+
+<button
+    class="btn btn-primary"
+    onclick="shareOffer()">
+
+    Share
+
+</button>
+
+<button
+    class="btn btn-secondary"
+    onclick="showQR()">
+
+    QR Code
+
+</button>
+
+<button
+    id="btn-reserve"
+    class="btn btn-primary">
+
+    Réserver
+
+</button>
+
+<button
+    id="btn-sendhash"
+    class="btn btn-success">
+
+    Publier
+
+</button>
+
+</div>
+
+<div class="row w-100">
+
+<div class="col-6">
+
+<button
+    class="btn btn-warning btn-sm w-100"
+    onclick="askNotificationPermission()">
+
+    Activer Notification
+
+</button>
+
+</div>
+
+<div class="col-6">
+
+<a
+    href="install.html"
+    class="btn btn-primary btn-sm w-100">
+
+    Installer Application
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
 
 
-    /* ------------------------------
-       2. Vider les champs
-    ------------------------------ */
-    function clearFields() {
-      [
-        "hotel-hotel", "hotel-cat", "hotel-chbcat", "hotel-prix",
-        "hotel-address", "hotel-phone", "hotel-email", "hotel-url"
-      ].forEach(id => document.getElementById(id).value = "");
-    }
 
-    document.getElementById('btn-close')
-      .addEventListener('click', clearFields);
+function clearFields(){
 
+    [
+        "hotel-hotel",
+        "hotel-cat",
+        "hotel-chbcat",
+        "hotel-prix",
+        "hotel-address",
+        "hotel-phone",
+        "hotel-email",
+        "hotel-url"
+    ]
+    .forEach(id=>{
 
-    /* ------------------------------
-       3. Bouton Réserver
-    ------------------------------ */
-    document.getElementById('btn-reserve').addEventListener('click', () => {
-      const url = document.getElementById('hotel-url').value;
-      if (!url) return alert("Ajoutez l'URL de réservation");
-      window.open(url, "_blank");
-    });
+        const el =
+            document.getElementById(id);
 
-
-    /* ------------------------------
-       4. Publier (workflow light)
-    ------------------------------ */
-    document.getElementById('btn-sendhash').addEventListener('click', () => {
-
-      const data = {
-        hotel_nom: document.getElementById('hotel-hotel').value,
-        hotel_cat: document.getElementById('hotel-cat').value,
-        hotel_chb: document.getElementById('hotel-chbcat').value,
-        hotel_prix: document.getElementById('hotel-prix').value,
-        adresse: document.getElementById('hotel-address').value,
-        tel: document.getElementById('hotel-phone').value,
-        email: document.getElementById('hotel-email').value
-      };
-
-      fetch("reserve.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(response => {
-        if (response.success) {
-          alert("Offre publiée !");
-          clearFields();
-        } else {
-          alert("Erreur : " + response.error);
+        if(el){
+            el.value = "";
         }
-      });
+
     });
 
+}
 
-    /* ------------------------------
-       5. Share corrigé
-    ------------------------------ */
-    function shareOffer() {
+document
+.getElementById('btn-close')
+.addEventListener(
+    'click',
+    clearFields
+);
 
-      const hotel = {
-        nom: document.getElementById('hotel-hotel').value,
-        cat: document.getElementById('hotel-cat').value,
-        chb: document.getElementById('hotel-chbcat').value,
-        prix: document.getElementById('hotel-prix').value,
-        adresse: document.getElementById('hotel-address').value,
-        tel: document.getElementById('hotel-phone').value,
-        email: document.getElementById('hotel-email').value,
-        url: document.getElementById('hotel-url').value || window.location.href
-      };
+document
+.getElementById('btn-reserve')
+.addEventListener(
+'click',
+()=>{
 
-      const text = `
-Offre Hôtel : ${hotel.nom}
-Catégorie : ${hotel.cat}⭐
-Chambre : ${hotel.chb}
-Prix : ${hotel.prix} €
-Adresse : ${hotel.adresse}
-Téléphone : ${hotel.tel}
-Email : ${hotel.email}
-Réserver : ${hotel.url}
-`.trim();
+    const url =
+        document
+        .getElementById('hotel-url')
+        .value;
 
-      if (navigator.share) {
-        navigator.share({
-          title: hotel.nom,
-          text: text,
-          url: hotel.url
-        });
+    if(!url){
+
+        alert(
+            "Ajoutez une URL de réservation"
+        );
+
         return;
-      }
-
-      navigator.clipboard.writeText(text);
-      alert("Offre copiée dans le presse‑papier.");
     }
 
+    window.open(
+        url,
+        "_blank"
+    );
 
-    /* ------------------------------
-       6. QR Code intégré
-    ------------------------------ */
-    function showQR() {
-      const url = window.location.href;
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
+});
 
-      const modal = document.createElement("div");
-      modal.className = "qr-modal";
+document
+.getElementById('btn-sendhash')
+.addEventListener(
+'click',
+()=>{
 
-      const img = new Image();
-      img.src = qrUrl;
-      img.style.width = "250px";
-      img.style.border = "8px solid white";
-      img.style.borderRadius = "12px";
-      img.style.boxShadow = "0 0 20px rgba(255,255,255,0.6)";
+    const data = {
 
-      modal.appendChild(img);
+        hotel_nom:
+            document.getElementById('hotel-hotel').value,
 
-      modal.onclick = () => modal.remove();
+        hotel_cat:
+            document.getElementById('hotel-cat').value,
 
-      document.body.appendChild(modal);
-    }
+        hotel_chbcat:
+            document.getElementById('hotel-chbcat').value,
 
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker enregistré"));
-    }
+        hotel_prix:
+            document.getElementById('hotel-prix').value,
 
-    function askNotificationPermission() {
-      Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          alert("Notifications activées !");
-        } else {
-          alert("Notifications refusées.");
-        }
-      });
-    }
-function setTodayDate() {
+        adresse:
+            document.getElementById('hotel-address').value,
 
-    const now = new Date();
+        tel:
+            document.getElementById('hotel-phone').value,
 
-    const options = {
-        weekday: 'long',
-        day: '2-digit',
-        month: 'long'
+        email:
+            document.getElementById('hotel-email').value,
+
+        hotel_url:
+            document.getElementById('hotel-url').value
+
     };
 
-    let formatted = now.toLocaleDateString('fr-FR', options);
+    fetch(
+        "reserve.php",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(data)
+        }
+    )
 
-    // Première lettre du jour en majuscule
-    formatted =
-        formatted.charAt(0).toUpperCase() +
-        formatted.slice(1);
+    .then(
+        response=>response.json()
+    )
 
-    // Première lettre du mois en majuscule
-    formatted = formatted.replace(
-        /(\d{2})\s([a-zàâçéèêëîïôûùüÿñæœ]+)/i,
-        (match, day, month) => {
-            return day + ' ' +
-                month.charAt(0).toUpperCase() +
-                month.slice(1);
+    .then(
+        response=>{
+
+            if(response.success){
+
+                alert("Offre publiée");
+
+                clearFields();
+
+            }else{
+
+                alert(
+                    "Erreur : " +
+                    response.error
+                );
+
+            }
+
         }
     );
 
-    document.getElementById('popup-date').textContent = formatted;
+});
+
+function shareOffer(){
+
+    const text =
+
+`🏨 ${document.getElementById('hotel-hotel').value}
+⭐ ${document.getElementById('hotel-cat').value}
+🛏 ${document.getElementById('hotel-chbcat').value}
+💶 ${document.getElementById('hotel-prix').value}
+📍 ${document.getElementById('hotel-address').value}
+📞 ${document.getElementById('hotel-phone').value}
+✉ ${document.getElementById('hotel-email').value}
+🔗 ${document.getElementById('hotel-url').value}`;
+
+    if(navigator.share){
+
+        navigator.share({
+
+            title:'La Vache',
+
+            text:text,
+
+            url:
+            document.getElementById(
+                'hotel-url'
+            ).value
+
+        });
+
+    }else{
+
+        navigator
+        .clipboard
+        .writeText(text);
+
+        alert(
+            "Offre copiée dans le presse-papiers"
+        );
+
+    }
+
 }
-  </script> 
-<script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js");
+
+function showQR(){
+
+    const url =
+        document.getElementById(
+            'hotel-url'
+        ).value ||
+        window.location.href;
+
+    const qrUrl =
+        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+        encodeURIComponent(url);
+
+    const modal =
+        document.createElement("div");
+
+    modal.className =
+        "qr-modal";
+
+    const img =
+        document.createElement("img");
+
+    img.src = qrUrl;
+    img.style.width = "250px";
+    img.style.border = "8px solid white";
+    img.style.borderRadius = "10px";
+
+    modal.appendChild(img);
+
+    modal.onclick = ()=>{
+        modal.remove();
+    };
+
+    document.body.appendChild(modal);
+
 }
+
+function askNotificationPermission(){
+
+    Notification
+    .requestPermission()
+    .then(permission=>{
+
+        if(permission==="granted"){
+
+            alert(
+                "Notifications activées"
+            );
+
+        }else{
+
+            alert(
+                "Notifications refusées"
+            );
+
+        }
+
+    });
+
+}
+
+if("serviceWorker" in navigator){
+
+    navigator.serviceWorker
+    .register(
+        "/service-worker.js"
+    )
+    .then(()=>{
+        console.log(
+            "Service Worker enregistré"
+        );
+    });
+
+}
+
+function updateHeaderDateTime() {
+
+    const now = new Date();
+
+    const jours = [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+    ];
+
+    const mois = [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre"
+    ];
+
+    const jour =
+        jours[now.getDay()];
+
+    const dateNum =
+        String(now.getDate()).padStart(2,"0");
+
+    const moisNom =
+        mois[now.getMonth()];
+
+    const h =
+        String(now.getHours()).padStart(2,"0");
+
+    const m =
+        String(now.getMinutes()).padStart(2,"0");
+
+    const s =
+        String(now.getSeconds()).padStart(2,"0");
+
+    const el =
+        document.getElementById(
+            "header-datetime"
+        );
+
+    if(el){
+
+        el.textContent =
+            `${jour} ${dateNum} ${moisNom} | ${h}:${m}:${s}`;
+
+    }
+}
+
+document
+.getElementById('reservationModal')
+.addEventListener(
+    'shown.bs.modal',
+    () => {
+
+        updateHeaderDateTime();
+
+        if(!window.clockStarted){
+
+            setInterval(
+                updateHeaderDateTime,
+                1000
+            );
+
+            window.clockStarted = true;
+
+        }
+
+    }
+);
+
+
+
 </script>
 
 </body>
-<div class="modal-footer"></div>
-
 </html>
