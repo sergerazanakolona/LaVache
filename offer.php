@@ -132,9 +132,16 @@ function showQR() {
 } 
 
 <?php
-$pdo = new PDO('mysql:host=localhost;dbname=lavache;charset=utf8', 'root', '');
+$pdo = new PDO(
+    "mysql:host=localhost;dbname=lavache;charset=utf8",
+    "root",
+    ""
+);
 
-$today = date('Y-m-d');
+$pdo->setAttribute(
+    PDO::ATTR_ERRMODE,
+    PDO::ERRMODE_EXCEPTION
+);
 
 // 1. Désactiver les offres dont la date est différente d'aujourd'hui
 $pdo->prepare("UPDATE offers SET active = 0 WHERE date_offre != ?")
@@ -142,9 +149,14 @@ $pdo->prepare("UPDATE offers SET active = 0 WHERE date_offre != ?")
 
 // 2. Récupérer l'offre du jour
 $stmt = $pdo->prepare("SELECT * FROM offers WHERE date_offre = ? AND active = 1 LIMIT 1");
-$stmt->execute([$today]);
+$result = $stmt->execute([$today]);
 $offer = $stmt->fetch(PDO::FETCH_ASSOC);
+echo json_encode([
+    "success" => true,
+    "rows" => $stmt->rowCount()
+]);
 
+exit;
 // 3. Si aucune offre pour aujourd'hui → demander saisie
 if (!$offer) {
     echo "<div class='alert alert-warning text-center'>

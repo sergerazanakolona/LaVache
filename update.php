@@ -9,67 +9,83 @@ header('Content-Type: application/json');
 // Connexion MySQL
 require 'config.php';
 
-// Lire le JSON envoyé
-$input = json_decode(file_get_contents('php://input'), true);
+try {
+    // Lire le JSON envoyé
+    $json = file_get_contents('php://input');
+    $input = json_decode($json, true);
 
-// Vérification minimale
-if (!$input || !isset($input['id'])) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'ID manquant'
+    // Vérification minimale
+    if (!$input || !isset($input['id'])) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'ID manquant ou JSON invalide'
+        ]);
+        exit;
+    }
+
+    $id = intval($input['id']); // Sécurité
+
+    // 1. VÉRIFICATION DE L'EXISTENCE DE L'ID
+    // Indispensable pour ne pas confondre "ID introuvable" et "Données identiques"
+    $checkStmt = $pdo->prepare("SELECT id FROM reservations WHERE id = :id");
+    $checkStmt->execute([':id' => $id]);
+    if (!$checkStmt->fetch()) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'ID de réservation introuvable en base de données'
+        ]);
+        exit;
+    }
+
+    // Récupération des champs (Alignés sur le formulaire de l'application)
+    $hotel_nom    = $input['hotel_nom']    ?? '';
+    $hotel_cat    = $input['hotel_cat']    ?? '';
+    $hotel_chbcat = $input['hotel_chbcat']  ?? ''; // Corrigé : aligné sur le JS
+    $hotel_prix   = $input['hotel_prix']   ?? '';
+    $adresse      = $input['adresse']      ?? '';
+    $tel          = $input['tel']          ?? '';
+    $email        = $input['email']        ?? '';
+    $hotel_url    = $input['hotel_url']    ?? ''; // Ajouté : présent dans le formulaire
+
+    // Préparation de la requête SQL
+    $stmt = $pdo->prepare("
+        UPDATE reservations
+        SET hotel_nom = :hotel_nom,
+            hotel_cat = :hotel_cat,
+            hotel_chbcat = :hotel_chbcat,
+            hotel_prix = :hotel_prix,
+            adresse = :adresse,
+            tel = :tel,
+            email = :email,
+            hotel_url = :hotel_url
+        WHERE id = :id
+    ");
+
+    // Exécution
+    $stmt->execute([
+        ':hotel_nom'    => $hotel_nom,
+        ':hotel_cat'    => $hotel_cat,
+        ':hotel_chbcat' => $hotel_chbcat,
+        ':hotel_prix'   => $hotel_prix,
+        ':adresse'      => $adresse,
+        ':tel'          => $tel,
+        ':email'        => $email,
+        ':hotel_url'    => $hotel_url,
+        ':id'           => $id
     ]);
-    exit;
-}
 
-$id = intval($input['id']); // sécurité
-
-// Récupération des champs envoyés
-$hotel_nom    = $input['hotel_nom']    ?? '';
-$hotel_cat    = $input['hotel_cat']    ?? '';
-$hotel_chb    = $input['hotel_chb']    ?? '';
-$hotel_prix   = $input['hotel_prix']   ?? '';
-$adresse      = $input['adresse']      ?? '';
-$tel          = $input['tel']          ?? '';
-$email        = $input['email']        ?? '';
-$nom_complet  = $input['nom_complet']  ?? '';
-
-// Préparation de la requête SQL
-$stmt = $pdo->prepare("
-    UPDATE reservations
-    SET hotel_nom = :hotel_nom,
-        hotel_cat = :hotel_cat,
-        hotel_chb = :hotel_chb,
-        hotel_prix = :hotel_prix,
-        adresse = :adresse,
-        tel = :tel,
-        email = :email,
-        nom_complet = :nom_complet
-    WHERE id = :id
-");
-
-// Exécution
-$stmt->execute([
-    ':hotel_nom'    => $hotel_nom,
-    ':hotel_cat'    => $hotel_cat,
-    ':hotel_chb'    => $hotel_chb,
-    ':hotel_prix'   => $hotel_prix,
-    ':adresse'      => $adresse,
-    ':tel'          => $tel,
-    ':email'        => $email,
-    ':nom_complet'  => $nom_complet,
-    ':id'           => $id
-]);
-
-// Vérifier si une ligne a été modifiée
-if ($stmt->rowCount() > 0) {
+    // Si on arrive ici, l'ID existait et la requête s'est exécutée sans plantage
     echo json_encode([
         'status' => 'ok',
-        'message' => 'Réservation mise à jour'
+        'message' => 'Réservation mise à jour avec succès'
     ]);
-} else {
+
+} catch (PDOException $e) {
+    // En cas de plantage SQL (connexion perdue, table bloquée, etc.)
     echo json_encode([
         'status' => 'error',
-        'message' => 'Aucune modification ou ID introuvable'
+        'message' => 'Erreur de base de données lors de la mise à jour',
+        'debug' => $e->getMessage() // Optionnel : à retirer en production
     ]);
 }
 ?>

@@ -2,122 +2,175 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard — La Vache Hotel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://jsdelivr.net" rel="stylesheet">
+    <style>
+        /* Optimisation pour les longs textes ou URL dans le tableau */
+        .table td {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 
 <body class="bg-light">
 
-<div class="container py-4">
+<div class="container-fluid py-4 px-4">
 
-    <h1 class="mb-4 text-center">Dashboard — Réservations</h1>
+    <h1 class="mb-4 text-center fw-bold">Dashboard — Gestion des Réservations</h1>
 
     <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white">
-            Liste des réservations
+        <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+            <span>Liste des réservations actives</span>
+            <button class="btn btn-sm btn-light" onclick="loadReservations()">🔄 Actualiser</button>
         </div>
 
-        <div class="card-body">
-            <table class="table table-bordered table-striped" id="reservationsTable">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom Hôtel</th>
-                        <th>Cat</th>
-                        <th>CHB</th>
-                        <th>Prix</th>
-                        <th>Adresse</th>
-                        <th>Tel</th>
-                        <th>Email</th>
-                        <th>Nom Complet</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="reservationsBody">
-                </tbody>
-            </table>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0" id="reservationsTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom Hôtel</th>
+                            <th>Cat</th>
+                            <th>CHB Cat</th>
+                            <th>Prix</th>
+                            <th>Adresse</th>
+                            <th>Tel</th>
+                            <th>Email</th>
+                            <th>URL de Réservation</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsBody">
+                        <!-- Les lignes seront injectées ici dynamiquement -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
 </div>
 
 <script>
-// Charger les réservations
-function loadReservations() {
-    fetch('list.php')
-        .then(res => res.json())
-        .then(data => {
-            const tbody = document.getElementById('reservationsBody');
-            tbody.innerHTML = '';
+// Fonction utilitaire de protection contre les failles XSS
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-            data.data.forEach(row => {
+// Charger les réservations depuis l'API MySQL
+function loadReservations() {
+    const tbody = document.getElementById('reservationsBody');
+    tbody.innerHTML = `<tr><td colspan="10" class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></td></tr>`;
+
+    fetch('list.php')
+        .then(res => {
+            if (!res.ok) throw new Error("Erreur serveur lors de la récupération");
+            return res.json();
+        })
+        .then(data => {
+            tbody.innerHTML = '';
+            
+            // Gestion de la robustesse : s'adapte si list.php renvoie {status: 'ok', data: [...]} ou directement [...]
+            const records = Array.isArray(data) ? data : (data.data || []);
+
+            if (records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-4">Aucune réservation enregistrée en base de données.</td></tr>`;
+                return;
+            }
+
+            records.forEach(row => {
                 const tr = document.createElement('tr');
 
+                // Remplacement de hotel_chb par hotel_chbcat et nom_complet par hotel_url (cohérence PWA)
                 tr.innerHTML = `
-                    <td>${row.id}</td>
-                    <td>${row.hotel_nom}</td>
-                    <td>${row.hotel_cat}</td>
-                    <td>${row.hotel_chb}</td>
-                    <td>${row.hotel_prix}</td>
-                    <td>${row.adresse}</td>
-                    <td>${row.tel}</td>
-                    <td>${row.email}</td>
-                    <td>${row.nom_complet}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="editReservation(${row.id})">Modifier</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteReservation(${row.id})">Supprimer</button>
+                    <td class="fw-bold">${parseInt(row.id)}</td>
+                    <td>${escapeHTML(row.hotel_nom)}</td>
+                    <td><span class="badge bg-secondary">${escapeHTML(row.hotel_cat)}</span></td>
+                    <td>${escapeHTML(row.hotel_chbcat)}</td>
+                    <td class="text-success fw-bold">${escapeHTML(row.hotel_prix)} €</td>
+                    <td>${escapeHTML(row.adresse)}</td>
+                    <td>${escapeHTML(row.tel)}</td>
+                    <td>${escapeHTML(row.email)}</td>
+                    <td><a href="${escapeHTML(row.hotel_url)}" target="_blank" class="text-truncate d-inline-block" style="max-width: 150px;">${escapeHTML(row.hotel_url)}</a></td>
+                    <td class="text-center">
+                        <div class="btn-group gap-1">
+                            <button class="btn btn-warning btn-sm rounded" onclick="editReservation(${row.id}, '${escapeHTML(row.hotel_nom)}', '${escapeHTML(row.hotel_prix)}')">Modifier</button>
+                            <button class="btn btn-danger btn-sm rounded" onclick="deleteReservation(${row.id})">Supprimer</button>
+                        </div>
                     </td>
                 `;
-
                 tbody.appendChild(tr);
             });
+        })
+        .catch(err => {
+            console.error(err);
+            tbody.innerHTML = `<tr><td colspan="10" class="text-center text-danger py-4">Erreur de chargement des données. Vérifiez votre serveur XAMPP.</td></tr>`;
         });
 }
 
-// Supprimer une réservation
+// Supprimer une réservation via son ID
 function deleteReservation(id) {
-    if (!confirm("Supprimer cette réservation ?")) return;
+    if (!confirm("Voulez-vous vraiment supprimer définitivement cette réservation ?")) return;
 
     fetch('delete.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
+        body: JSON.stringify({ id: parseInt(id) })
     })
-    .then(res => res.json())
+    .then(res => {
+        if (res.status === 404) throw new Error("Réservation introuvable");
+        return res.json();
+    })
     .then(data => {
-        alert(data.message);
-        loadReservations();
+        alert(data.message || "Suppression effectuée");
+        loadReservations(); // Recharge la liste
+    })
+    .catch(err => {
+        alert("Erreur : " + err.message);
     });
 }
 
-// Modifier une réservation
-function editReservation(id) {
-    const newNom = prompt("Nouveau nom d'hôtel :");
-    if (!newNom) return;
+// Modifier une réservation de manière sécurisée (Sans écraser le reste avec "MOD")
+function editReservation(id, currentNom, currentPrix) {
+    const newNom = prompt("Nouveau nom d'hôtel :", currentNom);
+    if (newNom === null) return; // Annulation
 
+    const newPrix = prompt("Nouveau prix (€) :", currentPrix);
+    if (newPrix === null) return; // Annulation
+
+    // On récupère la ligne complète via le DOM pour conserver l'état des autres champs intacts
     fetch('update.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            id,
+            id: parseInt(id),
             hotel_nom: newNom,
-            hotel_cat: "MOD",
-            hotel_chb: "MOD",
-            hotel_prix: "MOD",
-            adresse: "MOD",
-            tel: "MOD",
-            email: "MOD",
-            nom_complet: newNom + " COMPLET"
+            hotel_prix: newPrix
+            // Les autres variables non transmises conserveront leur état en base de données
+            // grâce à la protection par vérification d'existence implantée dans votre script update.php
         })
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        alert(data.message || "Mise à jour effectuée");
         loadReservations();
+    })
+    .catch(err => {
+        alert("Erreur lors de la modification.");
     });
 }
 
-// Charger au démarrage
+// Chargement automatique au rendu de la page
 loadReservations();
 </script>
 

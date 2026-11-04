@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Installer l'application</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
+        /* Visual anchor pour le QR Code afin de garantir un affichage propre et centré */
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            min-height: 250px;
+        }
+        #qrcode canvas, #qrcode img {
+            border: 6px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            border-radius: 8px;
+        }
+    </style>
 </head>
 
 <body class="bg-light">
@@ -12,32 +27,108 @@
 <div class="container py-5">
     <h1 class="text-center mb-4">Installer l'application</h1>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm mx-auto" style="max-width: 500px;">
         <div class="card-body text-center">
 
             <p class="mb-3">
                 Installez <strong>La Vache Hotel Slave</strong> sur votre tablette ou smartphone pour une expérience rapide et hors connexion.
             </p>
 
-            <button id="installBtn" class="btn btn-primary btn-lg" disabled>
+            <!-- Le bouton est activé dynamiquement par le script si l'application est installable -->
+            <button id="installBtn" class="btn btn-primary btn-lg w-100" disabled>
                 Installer l'application
             </button>
 
-            <p id="status" class="mt-3 text-muted"></p>
+            <p id="status" class="mt-3 text-muted small"></p>
         </div>
+    </div>
+
+    <div class="mt-5 text-center">
+        <p class="text-secondary">Scannez ce QR Code pour ouvrir ou installer l'application sur un autre appareil :</p>
+        <div id="qrcode"></div>
     </div>
 </div> 
 
-<div class="mt-4 text-center">
-    <p>Scannez ce QR Code pour ouvrir ou installer l'application :</p>
-    <div id="qrcode"></div>
-</div>
-
-
+<!-- Chargement de la bibliothèque de génération de QR code -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="qr-install.js"></script>
 
+<script>
+    // Utilisation de DOMContentLoaded pour garantir que les balises HTML existent avant d'y toucher
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        // 1. GÉNÉRATION DU QR CODE AUTOMATIQUE
+        const qrContainer = document.getElementById("qrcode");
+        if (qrContainer && typeof QRCode !== "undefined") {
+            // Utilise l'URL actuelle de votre application hébergée sur XAMPP
+            const appUrl = window.location.origin + "/index.html"; 
+            
+            new QRCode(qrContainer, {
+                text: appUrl,
+                width: 250,
+                height: 250,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
 
-<script src="install.js"></script>
+        // 2. LOGIQUE D'INSTALLATION DE LA PWA (Anciennement install.js)
+        const installBtn = document.getElementById("installBtn");
+        const statusText = document.getElementById("status");
+        let deferredPrompt = null;
+
+        // Écoute de l'événement système de proposition d'installation PWA
+        window.addEventListener("beforeinstallprompt", (e) => {
+            // Empêche le navigateur d'ouvrir sa propre bannière par défaut
+            e.preventDefault();
+            // Stocke l'événement pour l'exécuter au clic de l'utilisateur
+            deferredPrompt = e;
+            
+            // Active le bouton Bootstrap et change son état
+            if (installBtn) {
+                installBtn.removeAttribute("disabled");
+                installBtn.classList.remove("btn-primary");
+                installBtn.classList.add("btn-success"); // Devient vert pour inviter à l'action
+            }
+            if (statusText) {
+                statusText.textContent = "Application prête à être installée !";
+            }
+        });
+
+        // Action de clic sur le bouton d'installation
+        if (installBtn) {
+            installBtn.addEventListener("click", async () => {
+                if (!deferredPrompt) return;
+                
+                // Déclenche l'invite système d'installation
+                deferredPrompt.prompt();
+                
+                // Attend la réponse de l'utilisateur (Accepté ou Annulé)
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`Choix de l'installation : ${outcome}`);
+                
+                // Réinitialise l'invite
+                deferredPrompt = null;
+                
+                // Désactive à nouveau le bouton
+                installBtn.setAttribute("disabled", true);
+                installBtn.classList.remove("btn-success");
+                installBtn.classList.add("btn-primary");
+                
+                if (statusText) {
+                    statusText.textContent = outcome === "accepted" 
+                        ? "Merci d'avoir installé La Vache !" 
+                        : "Installation annulée.";
+                }
+            });
+        }
+
+        // Détection si l'application est déjà exécutée en mode standalone (déjà installée)
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            if (statusText) statusText.textContent = "L'application est déjà installée et s'exécute de manière autonome.";
+            if (installBtn) installBtn.textContent = "Déjà installée ✨";
+        }
+    });
+</script>
 </body>
 </html>

@@ -1,21 +1,16 @@
 // Nom du cache
 const CACHE_NAME = "lavache-pwa-v1";
 
-// Fichiers à mettre en cache (App Shell)
+// Fichiers statiques à mettre en cache (uniquement l'App Shell)
 const ASSETS = [
     "/",
     "/index.html",
     "/dashboard.html",
-    "/offer.php",
-    "/reserve.php",
-    "/update.php",
-    "/delete.php",
-    "/list.php",
     "/manifest.json",
     "/icon-512.png",
     "/icon-192.png",
-    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
-    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    "https://jsdelivr.net",
+    "https://jsdelivr.net"
 ];
 
 // Installation du service worker
@@ -28,7 +23,7 @@ self.addEventListener("install", event => {
     self.skipWaiting(); // Mise à jour immédiate
 });
 
-// Activation
+// Activation et nettoyage des anciens caches
 self.addEventListener("activate", event => {
     event.waitUntil(
         caches.keys().then(keys => {
@@ -43,21 +38,34 @@ self.addEventListener("activate", event => {
 
 // Interception des requêtes
 self.addEventListener("fetch", event => {
+    const url = new URL(event.request.url);
+
+    // SÉCURITÉ SÉRIEUSE : Ne jamais intercepter ni mettre en cache le PHP ou les requêtes de soumission POST
+    if (event.request.method !== "GET" || url.pathname.endsWith(".php")) {
+        // On laisse la requête aller directement au serveur XAMPP sans passer par le cache
+        return; 
+    }
+
     event.respondWith(
         caches.match(event.request).then(response => {
-            // Retourne le cache si disponible
+            // 1. Retourne le cache si disponible (HTML, CSS, Icônes)
             if (response) return response;
 
-            // Sinon, fetch réseau + cache dynamique
+            // 2. Sinon, fetch réseau + cache dynamique pour les autres éléments statiques
             return fetch(event.request)
                 .then(networkResponse => {
+                    // On vérifie que la réponse est valide avant de la cloner dans le cache
+                    if (!networkResponse || networkResponse.status !== 200) {
+                        return networkResponse;
+                    }
+                    
                     return caches.open(CACHE_NAME).then(cache => {
                         cache.put(event.request, networkResponse.clone());
                         return networkResponse;
                     });
                 })
                 .catch(() => {
-                    // Fallback offline
+                    // Fallback si l'utilisateur est complètement hors-ligne
                     if (event.request.destination === "document") {
                         return caches.match("/index.html");
                     }
@@ -65,11 +73,3 @@ self.addEventListener("fetch", event => {
         })
     );
 });
-
-<script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/service-worker.js");
-    })
-};
-</script>
