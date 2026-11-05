@@ -25,7 +25,43 @@
         }
     </style>
 </head>
-<body class="bg-light p-4">
+<body class="bg-light">
+    <!-- NAVBAR LA VACHE -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+    <div class="container-fluid">
+        <!-- Logo et Titre -->
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="index.html">
+            <img src="cow.png" alt="La Vache" style="height:30px;">
+            <span>La Vache</span>
+        </a>
+        
+        <!-- Bouton Menu Mobile (Hamburger) -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#lavacheNavbar" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Liens de navigation -->
+        <div class="collapse navbar-collapse" id="lavacheNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" id="nav-home" href="index.html">🏠 Accueil / Saisie</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nav-dashboard" href="dashboard.html">📊 Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nav-install" href="install.html">📲 Installer l'App</a>
+                </li>
+            </ul>
+            
+            <!-- Lien vers la vue client en bonus -->
+            <div class="d-flex">
+                <a class="btn btn-outline-info btn-sm" href="user.html" target="_blank">👁️ Voir le site client</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
 
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reservationModal">
         Ouvrir La Vache
@@ -106,6 +142,12 @@
     </div>
 
     <script>
+        // Met en surbrillance automatique le lien de la page actuelle dans la Navbar
+const currentPage = window.location.pathname.split("/").pop() || "index.html";
+if (currentPage === "index.html" || currentPage === "") document.getElementById("nav-home")?.classList.add("active");
+if (currentPage === "dashboard.html") document.getElementById("nav-dashboard")?.classList.add("active");
+if (currentPage === "install.html") document.getElementById("nav-install")?.classList.add("active");
+
         // Affichage optionnel de la date et heure du jour dans l'en-tête
         const dateEl = document.getElementById('header-datetime');
         if (dateEl) {
